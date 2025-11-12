@@ -2,20 +2,26 @@ package main
 
 import (
 	"context"
-
 	"distri/internal/server/core"
+	"fmt"
 )
 
 // main here it's only for concept of the app, not an actual usable command.
 func main() {
 	cfg := &core.AppConfiguration{}
 
-	app := core.NewApp(cfg)
-
-	handler := core.NewHandler(func(ctx context.Context, d *core.Distri) (res any, err error) {
+	handler := core.NewHandler("test", func(ctx context.Context, d *core.Distri) {
 		event := d.OnEvent("test")
 
-		return event, nil
+		v, err := core.Map[string](event)
+		d.Error(err)
+
+		res, err := d.Func(func() (any, error) {
+			return *v + ": processed", nil
+		})
+		d.Error(err)
+
+		d.SendEvent("test1", res)
 	})
 
 	handler.MapExec(context.Background())
@@ -24,7 +30,11 @@ func main() {
 		EventVal: "to jest po prostu jakis testowy event",
 	}
 
-	handler.HandleExec(exec)
+	err := handler.HandleExec(exec)
+	fmt.Printf("err: %e", err)
 
-	app.SetHandler(handler)
+	app := core.NewApp(cfg, handler)
+	if err := app.Start(); err != nil {
+		panic(err)
+	}
 }
