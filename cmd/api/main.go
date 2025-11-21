@@ -2,12 +2,12 @@ package main
 
 import (
 	"context"
-	"distri/internal/server"
 	"os"
 
 	"distri/internal/api"
 	"distri/internal/api/config"
 	"distri/internal/environment"
+	"distri/internal/server"
 )
 
 var (
