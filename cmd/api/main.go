@@ -4,18 +4,19 @@ import (
 	"context"
 	"os"
 
-	"distri/internal/api"
-	"distri/internal/api/config"
+	"github.com/nats-io/nats.go"
+
 	"distri/internal/environment"
 	"distri/internal/server"
+	"distri/internal/server/config"
 )
 
 var (
 	configOptions = []config.Option{
-		config.Address(os.Getenv(api.EnvAddress)),
+		config.NatsAddress(os.Getenv(server.EnvAddress)),
 	}
 	devConfigOptions = []config.Option{
-		config.Address("8080"),
+		config.NatsAddress(nats.DefaultURL),
 	}
 )
 

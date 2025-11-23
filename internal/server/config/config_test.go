@@ -27,11 +27,11 @@ func TestAddress(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := Address(tt.args.addr)
+			got := NatsAddress(tt.args.addr)
 			// Test the function by applying it to an empty config
 			result := got(Config{})
-			if result.Addr != tt.want {
-				t.Errorf("Address() result.Addr = %v, want %v", result.Addr, tt.want)
+			if result.NatsURL != tt.want {
+				t.Errorf("NatsAddress() result.NatsURL = %v, want %v", result.NatsURL, tt.want)
 			}
 		})
 	}
@@ -63,7 +63,7 @@ func TestConfig_IsValid(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := Config{
-				Addr: tt.fields.Addr,
+				NatsURL: tt.fields.Addr,
 			}
 			got, err := c.IsValid()
 			if (err != nil) != tt.wantErr {
@@ -93,16 +93,16 @@ func TestNewConfig(t *testing.T) {
 		},
 		{
 			name: "single address option",
-			args: args{opts: []Option{Address("localhost:8080")}},
-			want: Config{Addr: "localhost:8080"},
+			args: args{opts: []Option{NatsAddress("localhost:8080")}},
+			want: Config{NatsURL: "localhost:8080"},
 		},
 		{
 			name: "multiple options - last one wins",
 			args: args{opts: []Option{
-				Address("first:8080"),
-				Address("second:9090"),
+				NatsAddress("first:8080"),
+				NatsAddress("second:9090"),
 			}},
-			want: Config{Addr: "second:9090"},
+			want: Config{NatsURL: "second:9090"},
 		},
 	}
 	for _, tt := range tests {
@@ -126,9 +126,9 @@ func Test_missingConfigField(t *testing.T) {
 	}{
 		{
 			name:    "returns error with field name",
-			args:    args{name: "Address"},
+			args:    args{name: "NatsAddress"},
 			wantErr: true,
-			errMsg:  "configuration field 'Address' is required",
+			errMsg:  "configuration field 'NatsAddress' is required",
 		},
 		{
 			name:    "returns error with different field name",

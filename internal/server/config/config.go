@@ -9,7 +9,7 @@ type (
 )
 
 type Config struct {
-	Addr string
+	NatsURL string
 }
 
 func NewConfig(opts ...Option) Config {
@@ -23,16 +23,16 @@ func NewConfig(opts ...Option) Config {
 }
 
 func (c Config) IsValid() (bool, error) {
-	if c.Addr == "" {
-		return false, missingConfigField("Address")
+	if c.NatsURL == "" {
+		return false, missingConfigField("NATS url")
 	}
 
 	return true, nil
 }
 
-func Address(addr string) Option {
+func NatsAddress(addr string) Option {
 	return func(cfg Config) Config {
-		cfg.Addr = addr
+		cfg.NatsURL = addr
 
 		return cfg
 	}
